@@ -4,10 +4,11 @@ import Redis from 'ioredis';
 import { RedisService } from './redis.service';
 import { RedisController } from './redis.controller';
 import { SequelizeDatabaseModule } from 'src/data-base/sequelize.module';
+import { KnexModule } from 'src/data-base/knex.module';
 
-@Global() // makes Redis available across the app without re-import
+@Global()
 @Module({
-  imports: [SequelizeDatabaseModule],
+  imports: [SequelizeDatabaseModule,KnexModule],
   controllers: [RedisController],
   providers: [
     {

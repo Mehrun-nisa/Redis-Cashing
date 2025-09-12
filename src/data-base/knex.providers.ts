@@ -1,6 +1,6 @@
 import { knex } from 'knex';
 
-export const knexProviders = [
+export const knexProvider = [
   {
     provide: 'KNEX_CONNECTION',
     useFactory: async () => {

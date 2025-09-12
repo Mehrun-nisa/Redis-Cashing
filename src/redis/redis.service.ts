@@ -10,11 +10,11 @@ export class RedisService {
     constructor(
         @Inject('REDIS_CLIENT') private readonly redis: Redis,
         @InjectModel(User) private userModel: typeof User,
-        // @Inject('KNEX_CONNECTION') private knex: Knex,
+        @Inject('KNEX_CONNECTION') private readonly knex: Knex,
 
 ) {}
 
-    async getRedisUsers() {
+    async getRedisUsersBySeq() {
         const users = await this.redis.get('users');
         if (users) {
             return users
@@ -25,11 +25,27 @@ export class RedisService {
 
             // 3. Store in Redis
              await this.redis.set('users', JSON.stringify(dbUsers), 'EX', 30);
-            this.logger.log('📦 Users cached in Redis for 30s');
+            this.logger.log('Users cached in Redis for 30s');
             return dbUsers;
         }
     }
-    // async findUsers() {
-    //     return this.knex.select('*').from('users');
-    // }
+
+    async getRedisUsersByKnex() {
+        const users = await this.redis.get('users');
+        if (users) {
+            return users
+        } else {
+            this.logger.log('Cache miss - fetching from database');
+            const dbUsers = await this.findUsers();
+            this.logger.log(`Fecthed Data :: ${JSON.stringify(dbUsers)}`);
+
+            // 3. Store in Redis
+             await this.redis.set('users', JSON.stringify(dbUsers), 'EX', 30);
+            this.logger.log('Users cached in Redis for 30s');
+            return dbUsers;
+        }
+    }
+    async findUsers() {
+        return this.knex.select('*').from('users');
+    }
 }

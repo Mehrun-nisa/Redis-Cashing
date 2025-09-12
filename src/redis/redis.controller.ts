@@ -5,9 +5,14 @@ import { RedisService } from './redis.service';
 export class RedisController {
 
     constructor(private readonly redisService: RedisService) { }
-    @Get('redis-user')
-    async getUsers(){
-        return this.redisService.getRedisUsers();
+    @Get('redis-user-seq')
+    async getUsersBySeq(){
+        return this.redisService.getRedisUsersBySeq();
+    }
+
+    @Get('redis-user-knex')
+    async getUsersByKnex(){
+        return this.redisService.getRedisUsersByKnex();
     }
 
 }
